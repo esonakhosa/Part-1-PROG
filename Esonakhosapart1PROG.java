@@ -1,0 +1,92 @@
+/**
+ * Handles user registration validation and login status.
+ */
+public class Login {
+
+    private final String username;
+    private final String password;
+    private final String cellPhoneNumber;
+    private final String firstName;
+    private final String lastName;
+
+    public Login(String username,
+                 String password,
+                 String cellPhoneNumber,
+                 String firstName,
+                 String lastName) {
+        this.username = username;
+        this.password = password;
+        this.cellPhoneNumber = cellPhoneNumber;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    /** Checks whether the username contains an underscore and is at most five characters. */
+    public boolean checkUserName() {
+        return username != null
+                && username.contains("_")
+                && username.length() <= 5;
+    }
+
+    /** Checks whether the password meets the required complexity rules. */
+    public boolean checkPasswordComplexity() {
+        return password != null
+                && password.length() >= 8
+                && password.matches(".*[A-Z].*")
+                && password.matches(".*[0-9].*")
+                && password.matches(".*[^a-zA-Z0-9].*");
+    }
+
+    /** Checks for a South African number in the +27 followed by nine digits format. */
+    public boolean checkCellPhoneNumber() {
+        return cellPhoneNumber != null
+                && cellPhoneNumber.matches("\\+27\\d{9}");
+    }
+
+    /** Returns the appropriate registration result message. */
+    public String registerUser() {
+        if (!checkUserName()) {
+            return "Username is not correctly formatted, please ensure that your "
+                    + "username contains an underscore and is no more than five characters in length.";
+        }
+
+        if (!checkPasswordComplexity()) {
+            return "Password is not correctly formatted; please ensure that the password "
+                    + "contains at least eight characters, a capital letter, a number, and a special character.";
+        }
+
+        if (!checkCellPhoneNumber()) {
+            return "Cell phone number is not correctly formatted; please ensure that the number "
+                    + "contains the international code and is no more than ten characters in length.";
+        }
+
+        return "User has been registered successfully.";
+    }
+
+    /** Checks whether the entered credentials match the registered details. */
+    public boolean loginUser(String enteredUsername, String enteredPassword) {
+        return enteredUsername != null
+                && enteredPassword != null
+                && enteredUsername.equals(username)
+                && enteredPassword.equals(password);
+    }
+
+    /** Returns the appropriate login status message. */
+    public String returnLoginStatus(boolean loginStatus) {
+        if (loginStatus) {
+            return "Welcome " + firstName + " " + lastName
+                    + ", it is great to see you again.";
+        }
+
+        return "Username or password incorrect, please try again.";
+    }
+
+    public static void main(String[] args) {
+        Login user = new Login("kyl_1", "Password1!", "+27821234567", "Kylie", "Smith");
+
+        System.out.println(user.registerUser());
+
+        boolean loginStatus = user.loginUser("kyl_1", "Password1!");
+        System.out.println(user.returnLoginStatus(loginStatus));
+    }
+}
